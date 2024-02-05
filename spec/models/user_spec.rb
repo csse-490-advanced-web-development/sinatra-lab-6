@@ -1,6 +1,6 @@
 require_relative "../spec_helper"
 
-describe "User", skip: "Step 4: Unskip this.  I prefilled the model specs for you to make things a little easier." do
+describe "User" do
   describe "#create" do
     describe "with valid data" do
       before do
@@ -33,7 +33,17 @@ describe "User", skip: "Step 4: Unskip this.  I prefilled the model specs for yo
 
       it { user.should_not be_valid }
       it { user.errors[:password_confirmation].should include "doesn't match Password" }
-      # Hint: https://guides.rubyonrails.org/active_record_validations.html#confirmation
+    end
+
+    describe "with a duplicate" do
+      let(:user){ User.new(email: "susan@example.com") }
+      before do
+        User.create!(email: 'susan@example.com', password: 'Password1', password_confirmation: 'Password1')
+        user.save
+      end
+
+      it { user.should_not be_valid }
+      it { user.errors[:email].should include "is not a valid email address" }
     end
 
     describe "with a non-email" do
@@ -42,7 +52,6 @@ describe "User", skip: "Step 4: Unskip this.  I prefilled the model specs for yo
 
       it { user.should_not be_valid }
       it { user.errors[:email].should include "is not a valid email address" }
-      # Hint: `validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: "is not a valid email address" }`
     end
   end
 end

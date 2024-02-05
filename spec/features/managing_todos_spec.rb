@@ -33,24 +33,14 @@ feature "Managing Tasks", js: true do
     expect_task_list_to_be_exactly("Follow the test instructions")
   end
 
-  scenario "creating a new todo item with HTML content", skip: "Step 1: Unskip this test" do
+  scenario "creating a new todo item with HTML content" do
     visit "/"
     click_link "Add task"
     fill_in "Task Description", with: "Be <strong>bold</strong> all day!"
     click_button "Save"
-    # Note: This is testing that the HTML was escaped, and thus the tages
-    # are text rathern than HTML elements
+    # Note: This is testing that the HTML was escaped, and thus the tags
+    # are text rather than HTML elements
     expect_task_list_to_be_exactly("Be <strong>bold</strong> all day!")
-
-    # Implementation Notes/Hints:
-    #
-    # 1. Read "How do I automatically escape HTML?" in the SinatraRB FAQS: https://sinatrarb.com/faq.html#escape_html
-    #
-    # 2. Use the gem 'erubi' (not 'erubis'!) and add it to the project by including it in the Gemfile
-    #
-    # 3. The place you will add that `set ...` line is in ApplicationController
-    #
-    # 4. In erb, to include raw text (bypassing any sanitization), use <%== your_output_with_intentional_html_in_it %>
   end
 
   scenario "creating a new todo with invalid data" do

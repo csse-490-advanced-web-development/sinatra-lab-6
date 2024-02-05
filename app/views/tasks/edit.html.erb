@@ -1,6 +1,7 @@
 <h1>Edit Task</h1>
 <form method="POST" action="/tasks/<%= task.id %>" enctype="multipart/form-data">
   <input type="hidden" name="_method" value="PUT">
+  <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(env['rack.session']) %>">
   <label for="description">Task Description</label>
   <input type="text" name="description" id="description" value="<%= task.description %>">
   <input type="submit" value="Save">
@@ -8,6 +9,7 @@
 
 
 <form method="POST" action="/tasks/<%= task.id %>" enctype="multipart/form-data">
+  <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(env['rack.session']) %>">
   <input type="hidden" name="_method" value="DELETE">
   <input type="submit" value="Delete">
 </form>

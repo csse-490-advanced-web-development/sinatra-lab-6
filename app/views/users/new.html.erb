@@ -1,0 +1,11 @@
+<h1>Create an Account</h1>
+<form method="POST" action="/users" enctype="multipart/form-data">
+  <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(env['rack.session']) %>">
+  <label for="email">Email</label>
+  <input type="text" name="email" id="email" value="<%= user.email %>">
+  <label for="password">Password</label>
+  <input type="password" name="password" id="password">
+  <label for="password_confirmation">Confirm Password</label>
+  <input type="password" name="password_confirmation" id="password_confirmation">
+  <input type="submit" value="Sign Up">
+</form>
