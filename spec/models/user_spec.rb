@@ -35,7 +35,7 @@ describe "User" do
       it { user.errors[:password_confirmation].should include "doesn't match Password" }
     end
 
-    describe "with a duplicate" do
+    describe "with a duplicate email" do
       let(:user){ User.new(email: "susan@example.com") }
       before do
         User.create!(email: 'susan@example.com', password: 'Password1', password_confirmation: 'Password1')
@@ -43,7 +43,7 @@ describe "User" do
       end
 
       it { user.should_not be_valid }
-      it { user.errors[:email].should include "is not a valid email address" }
+      it { user.errors[:email].should include "has already been taken" }
     end
 
     describe "with a non-email" do
