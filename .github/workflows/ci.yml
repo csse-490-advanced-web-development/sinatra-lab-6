@@ -26,6 +26,11 @@ jobs:
         uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
         with:
           bundler-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      - name: Build React app
+        run: npm run build
       - name: Set up database schema
         run: bundle exec rake db:schema:load
       - name: Run tests
