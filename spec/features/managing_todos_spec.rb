@@ -3,9 +3,9 @@ require_relative '../spec_helper'
 feature "Managing Tasks", js: true do
   scenario "viewing the homepage with todo items" do
     expect(Task.all).to be_empty # Sanity check that the test database is empty
-    task1 = Task.create(description: 'Eat breakfast')
-    task2 = Task.create(description: 'Join class session')
-    task3 = Task.create(description: 'Work on lab')
+    task1 = Fabricate(:task, description: 'Eat breakfast')
+    task2 = Fabricate(:task, description: 'Join class session')
+    task3 = Fabricate(:task, description: 'Work on lab')
     visit '/'
     todo_lis = page.find_all("ul#todos li")
     todos_text = todo_lis.map{|todo_li| todo_li.text}
@@ -67,8 +67,8 @@ feature "Managing Tasks", js: true do
     # You can see the definition of this fabricator in ...
     # While the fabricator we defined is very simple now, we will expand it in
     # future tests, at which point you will really see its value.
-    Task.create(description: 'Eat Breakfast')
-    Task.create(description: 'Finish Lab 3, finally')
+    Fabricate(:task, description: 'Eat Breakfast')
+    Fabricate(:task, description: 'Finish Lab 3, finally')
     visit '/'
     # Note that this test doesn't stipulate that we have to do this old-school form submission.
     # We can (and will!) easily upgrade this to be a SPA without this test having to change at all!
@@ -81,7 +81,7 @@ feature "Managing Tasks", js: true do
   end
 
   scenario "updating a todo item with invalid data" do
-    Task.create(description: 'Eat Breakfast')
+    Fabricate(:task, description: 'Eat Breakfast')
     visit '/'
     expect_task_list_to_be_exactly("Eat Breakfast")
     click_on "Eat Breakfast"
@@ -97,9 +97,9 @@ feature "Managing Tasks", js: true do
   end
 
   scenario "deleting a todo" do
-    Task.create(description: 'Eat Breakfast')
-    Task.create(description: 'Join class session')
-    Task.create(description: 'Finish Lab 3, finally')
+    Fabricate(:task, description: 'Eat Breakfast')
+    Fabricate(:task, description: 'Join class session')
+    Fabricate(:task, description: 'Finish Lab 3, finally')
     visit '/'
     expect_task_list_to_be_exactly("Eat Breakfast", "Join class session", "Finish Lab 3, finally")
     click_on "Eat Breakfast"

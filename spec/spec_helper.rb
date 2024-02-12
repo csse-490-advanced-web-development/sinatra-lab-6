@@ -58,7 +58,7 @@ def expect_task_list_to_be_exactly(*expected_todos)
   todos_text.should eq expected_todos
 end
 
-def login_as(user, password)
+def login_as(user)
   # FYI: Normally, in a helper like this, I would set the user_id
   # in the session directly instead of going through the full
   # login flow.  This dramatically speeds up test runtimes

@@ -15,11 +15,16 @@ group :development do
   gem 'rerun'
 end
 
+group :development, :test do
+  gem 'debug'
+  gem 'fabrication'
+  gem 'faker'
+end
+
 group :test do
   gem 'capybara'
   gem 'capybara-screenshot'
   gem 'database_cleaner-active_record'
-  gem 'debug'
   gem 'rspec'
   gem 'selenium-webdriver'
 end

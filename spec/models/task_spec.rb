@@ -5,7 +5,7 @@ describe "Task" do
     describe "with valid data" do
       before do
         Task.count.should eq 0  # Sanity check that we haven't got orphaned records hanging around
-        Task.create(description: 'Eat breakfast')
+        Fabricate(:task, description: 'Eat breakfast')
       end
 
       it "should create a task" do
