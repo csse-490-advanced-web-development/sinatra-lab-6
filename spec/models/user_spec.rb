@@ -54,4 +54,18 @@ describe "User" do
       it { user.errors[:email].should include "is not a valid email address" }
     end
   end
+
+  describe "#to_json" do
+    let(:user){ Fabricate(:user, email: 'susan@example.com') }
+    let(:user_json){ JSON.parse(user.to_json()) }
+
+    it "does not include sensitive keys" do
+      expected_keys = ['email']
+      expect(user_json.keys).to eq expected_keys
+    end
+
+    it 'includes correct values' do
+      expect(user_json['email']).to eq 'susan@example.com'
+    end
+  end
 end

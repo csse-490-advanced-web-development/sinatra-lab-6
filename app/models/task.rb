@@ -8,6 +8,12 @@ class Task < ActiveRecord::Base
   # https://guides.rubyonrails.org/active_record_basics.html
   belongs_to :user
 
+  default_scope { order(id: :asc) }
+
   validates :description, presence: true
   validates :user, presence: true
+
+  def as_json
+    { id: id, description: description, complete: complete }
+  end
 end

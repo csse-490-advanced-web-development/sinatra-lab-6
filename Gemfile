@@ -5,9 +5,11 @@ source "https://rubygems.org"
 gem "bcrypt"
 gem "pg"
 gem "puma"
+gem "rack-contrib"
 gem "rake"
 gem "sinatra"
 gem "sinatra-activerecord"
+gem "sinatra-contrib", require: false
 gem "sinatra-flash"
 gem 'securerandom'
 

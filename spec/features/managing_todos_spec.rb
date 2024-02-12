@@ -84,7 +84,7 @@ feature "Managing Tasks", js: true do
     find_field("Task Description").value.should eq "Eat Breakfast"
     fill_in "Task Description", with: "Eat Lunch"
     click_button "Save"
-    expect_task_list_to_be_exactly("Finish Lab 3, finally", "Eat Lunch")
+    expect_task_list_to_be_exactly("Eat Lunch", "Finish Lab 3, finally")
   end
 
   scenario "updating a todo item with invalid data" do

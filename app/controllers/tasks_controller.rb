@@ -1,7 +1,11 @@
 class TasksController < ApplicationController
   get '/tasks' do
-    tasks = Task.all
-    erb :"tasks/index.html", locals: { tasks: Task.all }
+    tasks = current_user.tasks.all
+    if is_json_request?
+      json tasks
+    else
+      erb :"tasks/index.html", locals: { tasks: tasks }
+    end
   end
 
   get '/tasks/new' do

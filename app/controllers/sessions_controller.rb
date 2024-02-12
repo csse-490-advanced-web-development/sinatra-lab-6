@@ -1,6 +1,10 @@
-class UsersController < ApplicationController
+class SessionsController < ApplicationController
   get '/sessions/new' do
     erb :"sessions/new.html"
+  end
+
+  get '/sessions/current_user' do
+    json current_user
   end
 
   post '/sessions' do
@@ -17,6 +21,10 @@ class UsersController < ApplicationController
   delete '/session' do
     session.destroy
     flash[:notice] = "You have been logged out."
-    redirect "/"
+    if is_json_request?
+      200
+    else
+      redirect "/"
+    end
   end
 end

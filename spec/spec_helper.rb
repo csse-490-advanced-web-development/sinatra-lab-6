@@ -58,7 +58,7 @@ def expect_task_list_to_be_exactly(*expected_todos)
   todos_text.should eq expected_todos
 end
 
-def login_as(user)
+def login_as(user, password="Password1")
   # FYI: Normally, in a helper like this, I would set the user_id
   # in the session directly instead of going through the full
   # login flow.  This dramatically speeds up test runtimes
@@ -70,4 +70,9 @@ def login_as(user)
   fill_in "Password", with: password
   click_button "Log In"
   page.should have_content("You are logged in as #{user.email}")
+end
+
+def direct_login_as(user, password="Password1")
+  post '/sessions', { email: user.email, password: password }.to_json, { "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest", "CONTENT_TYPE" => 'application/json' }
+  expect(last_response.status).to eq 302
 end

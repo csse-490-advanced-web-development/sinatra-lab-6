@@ -41,4 +41,18 @@ describe "Task" do
       it { task.errors[:user].should include "can't be blank" }
     end
   end
+
+  describe "#to_json" do
+    let(:task){ Fabricate(:task, description: 'Eat breakfast', complete: true) }
+    let(:task_json){ JSON.parse(task.to_json()) }
+
+    it "does not include sensitive keys" do
+      expected_keys = ['id', 'description', 'complete']
+      expect(task_json.keys).to eq expected_keys
+    end
+
+    it { expect(task_json['id']).to eq task.id }
+    it { expect(task_json['description']).to eq 'Eat breakfast' }
+    it { expect(task_json['complete']).to eq true }
+  end
 end
