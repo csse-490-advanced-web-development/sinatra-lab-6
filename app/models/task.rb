@@ -6,6 +6,8 @@ class Task < ActiveRecord::Base
   # You can read all about it here:
   #
   # https://guides.rubyonrails.org/active_record_basics.html
+  belongs_to :user
 
   validates :description, presence: true
+  validates :user, presence: true
 end

@@ -32,5 +32,13 @@ describe "Task" do
       it { task.should_not be_valid }
       it { task.errors[:description].should include "can't be blank" }
     end
+
+    describe "without a user" do
+      let(:task){ Task.new }
+      before { task.save }
+
+      it { task.should_not be_valid }
+      it { task.errors[:user].should include "can't be blank" }
+    end
   end
 end
