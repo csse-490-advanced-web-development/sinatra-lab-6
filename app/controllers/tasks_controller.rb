@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+
   get '/tasks' do
     tasks = current_user.tasks.all
     if is_json_request?
@@ -13,13 +14,19 @@ class TasksController < ApplicationController
   end
 
   post '/tasks' do
-    task = Task.new(description: params[:description])
-
+    task = Task.new(user: current_user, description: params[:description])
     if task.save
-      redirect "/"
+      if is_json_request?
+        status 201
+        task.as_json.to_json
+      else
+        redirect "/"
+      end
     else
       flash.now[:errors] = task.errors.full_messages.join("; ")
       erb :"tasks/new.html"
+      status 400
+      {errors: task.errors.full_messages}.to_json
     end
   end
 
