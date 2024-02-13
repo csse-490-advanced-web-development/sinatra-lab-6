@@ -135,7 +135,7 @@ describe TasksController do
         last_response.status.should == 200
       end
 
-      it "returns an empty json body" do
+      it "returns tasks in json body" do
         json_response = JSON.parse(last_response.body)
         json_response.should == { 'id' => task.id, "description" => 'Eat Breakfast', "complete" => false }
       end
