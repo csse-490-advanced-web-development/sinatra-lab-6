@@ -1,4 +1,25 @@
 class TasksController < ApplicationController
+  def redirect_edit(task, return_url)
+    if task.save
+      tasks = current_user.tasks.all
+      if is_json_request?
+        status 201 if return_url == "tasks/new.html" 
+        json task
+      else
+        erb :"tasks/index.html", locals: { tasks: tasks }
+      end
+    else
+      if is_json_request?
+        status 400
+        json_response = {errors: [task.errors.full_messages.join("; ")]}
+        json json_response
+      else
+        flash.now[:errors] = task.errors.full_messages.join("; ")
+        erb :return_url
+      end
+    end
+  end 
+
   get '/tasks' do
     tasks = current_user.tasks.all
     if is_json_request?
@@ -14,24 +35,7 @@ class TasksController < ApplicationController
 
   post '/tasks' do
     task = Task.new(description: params[:description], user: current_user)
-    if task.save
-      tasks = current_user.tasks.all
-      if is_json_request?
-        status 201
-        json task
-      else
-        erb :"tasks/index.html", locals: { tasks: tasks }
-      end
-    else
-      if is_json_request?
-        status 400
-        json_response = {errors: [task.errors.full_messages.join("; ")]}
-        json json_response
-      else
-        flash.now[:errors] = task.errors.full_messages.join("; ")
-        erb :"tasks/new.html"
-      end
-    end
+    redirect_edit(task, "tasks/new.html")
   end
 
   get '/tasks/:id' do
@@ -54,13 +58,19 @@ class TasksController < ApplicationController
   end
 
   put '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.description = params[:description]
-    if task.save
-      redirect "/"
+    if Task.exists?(params[:id])
+      task = Task.find(params[:id])
+      if task.user == current_user
+        task.description = params[:description]
+        task.complete = params[:complete]
+        redirect_edit(task, "tasks/edit.html")
+      else
+        status 404
+        json ''
+      end 
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/edit.html", locals: { task: task }
+      status 404
+      json ''
     end
   end
 
