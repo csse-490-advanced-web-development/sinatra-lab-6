@@ -2,9 +2,11 @@ require './config/environment'
 require 'open-uri'
 require 'securerandom'
 require 'sinatra/json'
+require 'erubi'
 
 class ApplicationController < Sinatra::Application
   configure do
+    set :erb, escape_html: true
     set :public_folder, 'public'
     set :views, 'app/views'
     logger = Logger.new(File.open("#{root}/../log/#{environment}.log", 'a'))
@@ -19,7 +21,7 @@ class ApplicationController < Sinatra::Application
     use Rack::Protection
     # `use Rack::Protection` automatically enables all modules except for the
     # following, which have to be enabled explicitly
-    use Rack::Protection::EscapedParams
+    # use Rack::Protection::EscapedParams # erubi is handling html escaping
     # NOTE: Temporarily removing Rack::Protection::FormToken,
     # as we will be replacing it shortly
     # use Rack::Protection::FormToken # inherits from use Rack::Protection::AuthenticityToken
@@ -52,6 +54,12 @@ class ApplicationController < Sinatra::Application
       redirect "/tasks"
     else
       erb :"index.html"
+    end
+  end
+
+  helpers do
+    def hattr(text)
+      Rack::Utils.escape_path(text.to_s)
     end
   end
 end

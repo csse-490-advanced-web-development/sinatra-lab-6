@@ -12,6 +12,7 @@ gem "sinatra-activerecord"
 gem "sinatra-contrib", require: false
 gem "sinatra-flash"
 gem 'securerandom'
+gem 'erubi'
 
 group :development do
   gem 'rerun'

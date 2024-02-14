@@ -46,6 +46,7 @@ GEM
     diff-lcs (1.5.0)
     drb (2.2.0)
       ruby2_keywords
+    erubi (1.12.0)
     fabrication (2.31.0)
     faker (3.2.3)
       i18n (>= 1.8.11, < 2)
@@ -154,6 +155,7 @@ DEPENDENCIES
   capybara-screenshot
   database_cleaner-active_record
   debug
+  erubi
   fabrication
   faker
   pg
