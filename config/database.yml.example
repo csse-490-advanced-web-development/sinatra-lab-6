@@ -1,14 +1,14 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: simple_todo_app_development
+  database: development
   # username: your_username
   # password: your_password
 
 test:
   adapter: postgresql
   encoding: unicode
-  database: simple_todo_app_test
+  database: test
   # username: your_username
   # password: your_password
 
