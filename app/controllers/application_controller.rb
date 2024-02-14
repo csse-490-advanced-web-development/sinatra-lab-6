@@ -2,9 +2,11 @@ require './config/environment'
 require 'open-uri'
 require 'securerandom'
 require 'sinatra/json'
+require 'cgi'
 
 class ApplicationController < Sinatra::Application
   configure do
+    #set :erb, :escape_html => true
     set :public_folder, 'public'
     set :views, 'app/views'
     logger = Logger.new(File.open("#{root}/../log/#{environment}.log", 'a'))
