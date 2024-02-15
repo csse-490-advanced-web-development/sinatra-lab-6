@@ -19,10 +19,9 @@ async function signOut(){
         method: 'DELETE'
       }
     ).then(() => {
-      debugger
       window.location.href = '/';
     }).catch((error) => {
-      debugger
+      console.log(error);
     });
 }
 

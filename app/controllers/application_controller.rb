@@ -1,5 +1,6 @@
 require './config/environment'
 require 'open-uri'
+require 'rack/csrf'
 require 'securerandom'
 require 'sinatra/json'
 
@@ -15,14 +16,9 @@ class ApplicationController < Sinatra::Application
     enable :sessions
     set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(32) }
     use Rack::JSONBodyParser
-
+    use Rack::Csrf, raise: true, skip_if: ->(req) { req.env['rack.test'] }
     use Rack::Protection
-    # `use Rack::Protection` automatically enables all modules except for the
-    # following, which have to be enabled explicitly
     use Rack::Protection::EscapedParams
-    # NOTE: Temporarily removing Rack::Protection::FormToken,
-    # as we will be replacing it shortly
-    # use Rack::Protection::FormToken # inherits from use Rack::Protection::AuthenticityToken
     use Rack::Protection::RemoteReferrer
   end
 
@@ -35,6 +31,7 @@ class ApplicationController < Sinatra::Application
   end
 
   before '/*' do
+    Rack::Csrf.token(env)
     allowed_paths = [
       /^\/$/,
       /^\/users\/new$/,
@@ -70,6 +67,7 @@ class ApplicationController < Sinatra::Application
   end
 
   get '/' do
+    response.set_cookie("csrf", :value => Rack::Csrf.token(env))
     if current_user
       reverse_proxy_to_react('')
     else

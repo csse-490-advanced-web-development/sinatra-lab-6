@@ -130,7 +130,7 @@ export function ToDoItem({item, invalidateAndRefetch}) {
 }
 
 function ErrorMessages({errors}) {
-  if(errors.length > 0){
+  if(errors && errors.length > 0){
     return (
       <span class="errors" style={{color: 'red'}}>
         { errors }
