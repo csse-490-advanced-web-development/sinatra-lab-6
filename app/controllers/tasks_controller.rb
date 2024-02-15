@@ -23,32 +23,72 @@ class TasksController < ApplicationController
         redirect "/"
       end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/new.html"
-      status 400
-      {errors: task.errors.full_messages}.to_json
+      if is_json_request?
+        status 400
+        {errors: task.errors.full_messages}.to_json
+      else
+        flash.now[:errors] = task.errors.full_messages.join("; ")
+        erb :"tasks/new.html"
+      end      
     end
   end
 
   get '/tasks/:id' do
-    task = Task.find(params[:id])
-    erb :"tasks/edit.html", locals: { task: task }
-  end
-
-  put '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.description = params[:description]
-    if task.save
-      redirect "/"
+    task = current_user.tasks.find_by_id(params[:id])
+    if is_json_request?
+      if task == nil
+        status 404
+        json({})
+      else
+        task.as_json.to_json
+      end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
       erb :"tasks/edit.html", locals: { task: task }
     end
   end
 
+  put '/tasks/:id' do
+    task = current_user.tasks.find_by_id(params[:id])
+    if task == nil
+      status 404
+      json({})
+    else
+      task.description = params[:description]
+      task.complete = params[:complete]
+      if is_json_request?
+        if task.save
+          status 200
+          task.as_json.to_json
+        else
+          status 400
+          {errors: task.errors.full_messages}.to_json
+        end
+      else
+        if task.save
+          redirect "/"
+        else
+          flash.now[:errors] = task.errors.full_messages.join("; ")
+          erb :"tasks/edit.html", locals: { task: task }
+        end
+      end
+    end
+  end
+
   delete '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.destroy!
-    redirect "/"
+    task = current_user.tasks.find_by_id(params[:id])
+    if is_json_request?
+      if task == nil
+        status 404
+        json({})
+      else
+        status 204
+        task.destroy!
+      end
+    else
+      if task != nil
+        task.destroy!
+        redirect "/"
+      end
+    end
   end
 end
