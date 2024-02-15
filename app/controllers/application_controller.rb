@@ -41,17 +41,49 @@ class ApplicationController < Sinatra::Application
       /^\/users$/,
       /^\/sessions\/new$/,
       /^\/sessions$/,
+      /^\/static\/.*$/,
+      /^\/.*.hot-update..*$/
     ]
     return if allowed_paths.any?{ |matcher| matcher.match? request.path }
     return if current_user
     redirect "/sessions/new", 401
   end
 
+  def reverse_proxy_to_react(path)
+    # TODO: There is almost certainly a path traversal bug in here...
+    if ENV['APP_ENV'] == 'development'
+      uri = URI.open("http://lvh.me:3000/#{path}")
+      result = uri.read
+      [ uri.status.first.to_i, {'Content-Type' => uri.content_type}, result ]
+    else
+      path = "index.html" if path == ""
+      uri = URI.open("build/#{path}")
+      result = uri.read
+      file_type = File.extname(path)
+      mime_types = {
+        ".css" => "text/css",
+        ".js" => "text/javascript",
+        ".html" => "text/html"
+      }
+      [ 200, {'Content-Type' => mime_types[file_type] || "text/html"}, result ]
+    end
+  end
+
   get '/' do
     if current_user
-      redirect "/tasks"
+      reverse_proxy_to_react('')
     else
       erb :"index.html"
     end
+  end
+
+  get '/static/*' do |path|
+    reverse_proxy_to_react('static/' + path)
+  end
+
+  get '/*.hot-update.*' do |path, postfix|
+    # e.g. http://lvh.me:5000/11646e0feca40a01f978.hot-update.json
+    #  or  http://lvh.me:5000/main.1bfdb171386f91fe32fb.hot-update.js
+    reverse_proxy_to_react(path + '.hot-update.' + postfix)
   end
 end
