@@ -1,13 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
 import './index.css';
-import App from './App';
+import LoggedInHeader from './LoggedInHeader'
+import ToDoList from './ToDoList';
 import reportWebVitals from './reportWebVitals';
 
+const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <LoggedInHeader client={queryClient} />
+      <ToDoList client={queryClient} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 
