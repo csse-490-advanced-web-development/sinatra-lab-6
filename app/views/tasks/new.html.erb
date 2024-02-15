@@ -1,6 +1,6 @@
 <h1>Add a New Task</h1>
 <form method="POST" action="/tasks" enctype="multipart/form-data">
-  <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(env['rack.session']) %>">
+  <%= Rack::Csrf.tag(env) %>
   <label for="description">Task Description</label>
   <input type="text" name="description" id="description">
   <input type="submit" value="Save">
