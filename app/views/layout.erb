@@ -9,7 +9,7 @@
   <title>Simple Photo Processor</title>
 
   <link rel="stylesheet" href="/stylesheets/main.css">
-  <link rel="icon" href="/images/favicon.png">
+  <link rel="icon" href="/images/favicon.png'">
 </head>
 
 <body>
@@ -18,7 +18,7 @@
     <% if current_user %>
       <small>You are logged in as <%= current_user.email %></small>
       <form method="POST" action="/session" enctype="multipart/form-data">
-        <%= Rack::Csrf.tag(env) %>
+        <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(env['rack.session']) %>">
         <input type="hidden" name="_method" value="DELETE">
         <input type="submit" value="Sign Out">
       </form>
