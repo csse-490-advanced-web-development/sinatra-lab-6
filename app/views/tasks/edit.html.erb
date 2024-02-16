@@ -1,5 +1,5 @@
 <h1>Edit Task</h1>
-<form method="POST" action="/tasks/<%== hattr task.id %>" enctype="multipart/form-data">
+<form method="POST" action="/tasks/<%= task.id %>" enctype="multipart/form-data">
   <input type="hidden" name="_method" value="PUT">
   <%= Rack::Csrf.tag(env) %>
   <label for="description">Task Description</label>
@@ -8,7 +8,7 @@
 </form>
 
 
-<form method="POST" action="/tasks/<%== hattr task.id %>" enctype="multipart/form-data">
+<form method="POST" action="/tasks/<%= task.id %>" enctype="multipart/form-data">
   <%= Rack::Csrf.tag(env) %>
   <input type="hidden" name="_method" value="DELETE">
   <input type="submit" value="Delete">

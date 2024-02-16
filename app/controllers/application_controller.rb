@@ -3,11 +3,9 @@ require 'open-uri'
 require 'rack/csrf'
 require 'securerandom'
 require 'sinatra/json'
-require 'erubi'
 
 class ApplicationController < Sinatra::Application
   configure do
-    set :erb, escape_html: true
     set :public_folder, 'public'
     set :views, 'app/views'
     logger = Logger.new(File.open("#{root}/../log/#{environment}.log", 'a'))
@@ -20,7 +18,7 @@ class ApplicationController < Sinatra::Application
     use Rack::JSONBodyParser
     use Rack::Csrf, raise: true, skip_if: ->(req) { req.env['rack.test'] }
     use Rack::Protection
-    # use Rack::Protection::EscapedParams
+    use Rack::Protection::EscapedParams
     use Rack::Protection::RemoteReferrer
   end
 
@@ -85,11 +83,5 @@ class ApplicationController < Sinatra::Application
     # e.g. http://lvh.me:5000/11646e0feca40a01f978.hot-update.json
     #  or  http://lvh.me:5000/main.1bfdb171386f91fe32fb.hot-update.js
     reverse_proxy_to_react(path + '.hot-update.' + postfix)
-  end
-
-  helpers do
-    def hattr(text)
-      Rack::Utils.escape_path(text.to_s)
-    end
   end
 end
