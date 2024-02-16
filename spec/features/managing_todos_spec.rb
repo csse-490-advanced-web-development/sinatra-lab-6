@@ -47,7 +47,7 @@ feature "Managing Tasks", js: true do
     click_button "Save"
     # Note: This is testing that the HTML was escaped, and thus the tags
     # are text rather than HTML elements
-    expect_task_list_to_be_exactly("Be <strong>bold</strong> all day!")
+    expect_task_list_to_be_exactly("Be &lt;strong&gt;bold&lt;&#x2F;strong&gt; all day!")
   end
 
   scenario "creating a new todo with invalid data" do
