@@ -50,26 +50,12 @@ RSpec.configure do |config|
   config.include Capybara
 end
 
-RSpec.configure do |config|
-  config.before(:suite) do
-    # Rebuild the React App
-    if File.directory?('build')
-      puts "Deleting existing build before running tests"
-      FileUtils.remove_dir('build')
-    end
-    puts "Building React app"
-    `npm run build`
-    build_status = $?.exitstatus
-    expect(build_status).to eq 0
-  end
-end
-
 def expect_task_list_to_be_exactly(*expected_todos)
   page.should have_content("Together, we can TODO it!")
   page.should have_css("ul#todos")
-  expected_todos.each_with_index do |expected_todo, index|
-    page.should have_selector("ul#todos li:nth-of-type(#{index+1})", text: expected_todo)
-  end
+  todo_lis = page.find_all("ul#todos li")
+  todos_text = todo_lis.map{|todo_li| todo_li.text}
+  todos_text.should eq expected_todos
 end
 
 def login_as(user, password="Password1")

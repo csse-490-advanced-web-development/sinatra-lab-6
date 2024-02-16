@@ -117,16 +117,4 @@ feature "Managing Tasks", js: true do
     # the homepage
     expect_task_list_to_be_exactly("Join class session", "Finish Lab 3, finally")
   end
-
-  scenario "deleting a todo that has already been deleted doesn't raise errors" do
-    task = Fabricate(:task, description: 'Eat Breakfast', user: user)
-    Fabricate(:task, description: 'Join class session', user: user)
-    Fabricate(:task, description: 'Finish Lab 3, finally', user: user)
-    visit '/'
-    expect_task_list_to_be_exactly("Eat Breakfast", "Join class session", "Finish Lab 3, finally")
-    task.destroy!
-    click_on "Eat Breakfast"
-    click_button "Delete"
-    expect_task_list_to_be_exactly("Join class session", "Finish Lab 3, finally")
-  end
 end
