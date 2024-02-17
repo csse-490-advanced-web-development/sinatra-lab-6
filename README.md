@@ -86,8 +86,11 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Creating the Heroku application
 
+heroku link: https://bellkm-lab-6-729953813349.herokuapp.com/
+
 
 #### ** DO NOT DEPLOY YET **
+figuring ignoring this was fine since it's due today
 
 ```sh
 $ heroku create
