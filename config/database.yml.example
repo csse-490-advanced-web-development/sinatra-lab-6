@@ -1,14 +1,22 @@
 development:
   adapter: postgresql
   encoding: unicode
+<<<<<<< HEAD
   database: simple_todo_app_development1
+=======
+  database: lab_6_todo_development
+>>>>>>> 7e5fee3ecd4f1e60e68497f2524534df607b614a
   # username: your_username
   # password: your_password
 
 test:
   adapter: postgresql
   encoding: unicode
+<<<<<<< HEAD
   database: simple_todo_app_test1
+=======
+  database: lab_6_todo_test
+>>>>>>> 7e5fee3ecd4f1e60e68497f2524534df607b614a
   # username: your_username
   # password: your_password
 
