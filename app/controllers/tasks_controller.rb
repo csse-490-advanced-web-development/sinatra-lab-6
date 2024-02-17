@@ -12,36 +12,89 @@ class TasksController < ApplicationController
     erb :"tasks/new.html"
   end
 
-  post '/tasks' do
-    task = Task.new(description: params[:description])
 
+  post '/tasks' do
+    task = Task.new( description: params[:description],user: current_user)
     if task.save
-      redirect "/"
+      if is_json_request?
+        status 201
+        json id: task.id, description: task.description, complete: task.complete
+      else
+        redirect "/"
+      end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/new.html"
+      if is_json_request?
+        status 400
+        {errors: task.errors.full_messages}.to_json
+      else
+        flash.now[:errors] = task.errors.full_messages.join("; ")
+        erb :"tasks/new.html"
+      end  
     end
   end
 
+
   get '/tasks/:id' do
-    task = Task.find(params[:id])
-    erb :"tasks/edit.html", locals: { task: task }
+    
+    task = current_user.tasks.find_by_id(params[:id])
+    if task
+    if is_json_request?
+      task.as_json.to_json
+      
+    else
+      erb :"tasks/edit.html", locals: { task: task }
+    end
+  else
+      status 404
+      json({})
+ 
+    end
   end
 
   put '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.description = params[:description]
-    if task.save
-      redirect "/"
+    
+    task = current_user.tasks.find_by_id(params[:id])
+    if task 
+      task.description = params[:description]
+      task.complete = params[:complete] =='true'
+      if is_json_request?
+        if task.save
+          status 200
+          task.as_json.to_json
+        else
+          status 400
+          {errors: task.errors.full_messages}.to_json
+        end
+      else
+        if task.save
+          redirect "/"
+        else
+          flash.now[:errors] = task.errors.full_messages.join("; ")
+          erb :"tasks/edit.html", locals: { task: task }
+        end
+      end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/edit.html", locals: { task: task }
+      status 404
+      json({})
     end
   end
 
   delete '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.destroy!
-    redirect "/"
+    
+    task = current_user.tasks.find_by_id(params[:id])
+    if is_json_request?
+      if task == nil
+        status 404
+        json({})
+      else
+        status 204
+        task.destroy!
+      end
+    else
+      if task != nil
+        task.destroy!
+        redirect "/"
+      end
+    end
   end
 end
