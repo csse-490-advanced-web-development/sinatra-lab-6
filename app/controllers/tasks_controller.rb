@@ -14,21 +14,20 @@ class TasksController < ApplicationController
 
   post '/tasks' do
     task = Task.new(description: params[:description], user: current_user)
-
-    if task.save
-      if is_json_request?
+    if is_json_request?
+      if task.save
         status 201
         json task
       else
-        redirect "/"
-      end
-    else
-      if is_json_request?
         status 400
         json errors: task.errors.full_messages
+      end
+    else
+      if task.save
+        redirect "/"
       else
         flash.now[:errors] = task.errors.full_messages.join("; ")
-        erb :"tasks/new.html"
+        erb :"tasks/new.html"      
       end
     end
   end
@@ -46,9 +45,9 @@ class TasksController < ApplicationController
     else
       erb :"tasks/edit.html", locals: { task: task }
     end
-  rescue ActiveRecord::RecordNotFound
-    status 404
-    json({})
+    rescue ActiveRecord::RecordNotFound
+      status 404
+      json({})
   end
 
   put '/tasks/:id' do
@@ -93,8 +92,8 @@ class TasksController < ApplicationController
     else
       redirect "/"
     end
-  rescue ActiveRecord::RecordNotFound
-    status 404
-    json({})
+    rescue ActiveRecord::RecordNotFound
+      status 404
+      json({})
   end
 end
