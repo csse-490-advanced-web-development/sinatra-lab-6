@@ -4,6 +4,7 @@ require 'rack/csrf'
 require 'securerandom'
 require 'sinatra/json'
 
+
 class ApplicationController < Sinatra::Application
   configure do
     set :public_folder, 'public'

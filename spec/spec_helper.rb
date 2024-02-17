@@ -42,7 +42,7 @@ end
 Capybara.app = app
 # NOTE: Change the javascript_driver to :selenium_chrome_headless
 # once you've gotten over the novelty of seeing your tests run live!
-Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.javascript_driver = :selenium_headless
 Capybara.save_path = '../tmp'
 Capybara.server = :puma, { Silent: true }
 
