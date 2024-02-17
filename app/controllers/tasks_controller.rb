@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   get '/tasks' do
     tasks = current_user.tasks.all
     if is_json_request?
-      json tasks
+      json tasks.map { |task| {id: task.id, description: task.description, complete: task.complete} }
     else
       erb :"tasks/index.html", locals: { tasks: tasks }
     end
@@ -13,35 +13,93 @@ class TasksController < ApplicationController
   end
 
   post '/tasks' do
-    task = Task.new(description: params[:description])
-
+    task = current_user.tasks.new(description: params[:description], user: current_user)
     if task.save
-      redirect "/"
+      if is_json_request? 
+        status 201
+        json id: task.id, description: task.description, complete: task.complete
+      else
+        redirect "/"
+      end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/new.html"
+      if is_json_request? 
+        status 400
+        json errors: task.errors.full_messages
+      else
+        flash.now[:errors] = task.errors.full_messages.join("; ")
+        erb :"tasks/new.html"
+      end
+    end
+  end
+  
+
+  get '/tasks/:id' do
+    task = current_user.tasks.find_by_id(params[:id])
+    if task
+      if is_json_request? 
+        json id: task.id, description: task.description, complete: task.complete
+      else
+        erb :"tasks/edit.html", locals: { task: task }
+      end
+    else
+      status 404
+      json({})
     end
   end
 
-  get '/tasks/:id' do
-    task = Task.find(params[:id])
-    erb :"tasks/edit.html", locals: { task: task }
-  end
 
   put '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.description = params[:description]
-    if task.save
-      redirect "/"
+    task = current_user.tasks.find_by_id(params[:id])
+    if task
+      task.description = params[:description]
+      task.complete = params[:complete] == 'true'
+      if is_json_request?
+        if task.save
+          status 200
+          json id: task.id, description: task.description, complete: task.complete
+        else
+          status 400
+          json errors: task.errors.full_messages
+        end
+      else 
+        if task.save
+          redirect "/"
+        else
+          flash.now[:errors] = task.errors.full_messages.join("; ")
+          erb :"tasks/edit.html", locals: { task: task }
+        end
+      end
     else
-      flash.now[:errors] = task.errors.full_messages.join("; ")
-      erb :"tasks/edit.html", locals: { task: task }
+      status 404
+      json({})
     end
   end
 
   delete '/tasks/:id' do
-    task = Task.find(params[:id])
-    task.destroy!
-    redirect "/"
+    task = current_user.tasks.find_by_id(params[:id])
+    if task
+      if is_json_request?
+        task.destroy
+        status 204
+        json({})
+      else 
+        task.destroy
+        redirect "/"
+      end
+    else
+      if is_json_request?
+        status 404
+        json({})
+      else 
+        redirect "/"
+      end
+    end
+    
   end
+
 end
+404 # not found
+204 # no content
+201 # created
+400 # bad request
+200 # ok
