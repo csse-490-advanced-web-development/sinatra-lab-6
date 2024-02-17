@@ -10,7 +10,7 @@
 <ul id="todos">
   <% tasks.each do |task| %>
     <li class="task">
-      <a href="/tasks/<%= task.id %>"><%= CGI.unescapeHTML task.description %></a>
+      <a href="/tasks/<%= task.id %>"><%== task.description %></a>
     </li>
   <% end %>
 </ul>

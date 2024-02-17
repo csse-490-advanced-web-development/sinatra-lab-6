@@ -3,7 +3,7 @@ require 'open-uri'
 require 'rack/csrf'
 require 'securerandom'
 require 'sinatra/json'
-require 'cgi'
+
 
 class ApplicationController < Sinatra::Application
   configure do
