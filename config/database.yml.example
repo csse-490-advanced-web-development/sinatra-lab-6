@@ -2,15 +2,15 @@ development:
   adapter: postgresql
   encoding: unicode
   database: lab_6_todo_development
-  # username: your_username
-  # password: your_password
+  # username: postgres
+  # password: postgres
 
 test:
   adapter: postgresql
   encoding: unicode
   database: lab_6_todo_test
-  # username: your_username
-  # password: your_password
+  # username: postgres
+  # password: postgres
 
 # production:
 #   adapter: postgresql
